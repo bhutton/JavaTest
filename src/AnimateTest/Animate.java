@@ -3,6 +3,7 @@ package AnimateTest;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JApplet;
 import javax.swing.JFrame;
@@ -32,7 +33,9 @@ public class Animate extends JApplet {
 		
 		for(count = 0; count < num; count++) {
 			
-			g.clearRect(prevX, prevY, 100, 100);
+			super.paint(g);
+			
+			//g.clearRect(prevX, prevY, 100, 100);
 			
 			// Recalculate destination coordinates
 			y += 1;
@@ -47,16 +50,27 @@ public class Animate extends JApplet {
 			//Color randomColor = new Color(R, G, B);
 			
 			setSize(400,400);
+			setBackground(Color.blue);
+		
 			
 			// Set new color
 			//g.setColor(randomColor);
 			g.setColor(Color.blue);
+			
 			// Draw line
 			
-			g.fillRect(x, y, 100, 100);
+
+			g.drawRect(x, y, 100, 100);
 			
 			prevX = x;
 			prevY = y;
+			
+			try {
+				TimeUnit.SECONDS.sleep(1);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			
 				
