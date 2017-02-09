@@ -2,10 +2,16 @@ package AnimateTest;
 
 import java.applet.Applet;
 import java.util.concurrent.ThreadLocalRandom;
+
+import javax.imageio.ImageIO;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class Animate extends Applet implements Runnable {
 	
@@ -14,15 +20,30 @@ public class Animate extends Applet implements Runnable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	int x,y,num,width=50,height=50, appletHeight, appletWidth, incX=1, incY=1;
-	
-	int delay = 100;
+	int x,y,num,width=50,height=50, appletHeight, appletWidth, incX=1, incY=1, delay = 100, brickHeight = 50;
 	
 	Thread animatorThread;
 	
 	boolean frozen = false, forward = true, right = true, down = true;
 	
+	BufferedImage imgBall = null, imgBrick = null;
+	
+	String 	ball = "../src/AnimateTest/ball.png",
+			brick = "../src/AnimateTest/brick-green.png"; 
+	
 	public void init(){
+		
+		// Initialize Window Size
+		setSize(800,600);
+		
+		// Load Ball Image
+		try { imgBall = ImageIO.read(new File(ball)); } 
+		catch (IOException e) { e.printStackTrace(); }
+		
+		// Load Brick Image
+		try { imgBrick = ImageIO.read(new File(brick)); } 
+		catch (IOException e) { e.printStackTrace(); }
+		
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 	        
@@ -97,14 +118,11 @@ public class Animate extends Applet implements Runnable {
     		
     		right = true; 
     	}
-    	if (y <= 0) {
+    	if (y <= ((brickHeight + 5) * 4)) {
     		incY = ThreadLocalRandom.current().nextInt(min, max + 1);
     		
     		down = true; 
     	}
-    	
-    	
-    	
     	
     	if (right) x += incX; 
     	else x -= incX;
@@ -114,11 +132,19 @@ public class Animate extends Applet implements Runnable {
 	}
 
 	public void paint(Graphics g) {
+		
 		Dimension appletSize = this.getSize();
 	    appletHeight = appletSize.height;
 	    appletWidth = appletSize.width;
 	    
-	    g.drawOval(x, y, width, height);
+	    g.drawImage(imgBall, x, y, null);
+	    
+	    for (int count = 5; count < 200; count += 55) {	
+		    for (int counter = 5; counter < appletWidth; counter += 55) {
+		    	g.drawImage(imgBrick, counter, count, null);
+		    }
+	    }
+	    
 	}
 
 }

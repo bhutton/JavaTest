@@ -13,12 +13,14 @@ public class LoadImageDemo extends JPanel {
    public static final int CANVAS_HEIGHT = 480;
    public static final String TITLE = "Load Image Demo";
  
-   private String imgFileName = "/Users/bhutton/repo/JavaTest/src/LoadImageDemo/sports-balls-clipart-soccer-ball-clip-art-12.png"; // relative to project root (or bin)
+   private String imgFileName = "/src/LoadImageDemo/ball.jpg"; // relative to project root (or bin)
    private Image img;  // a BufferedImage object
  
    /** Constructor to set up the GUI components */
    public LoadImageDemo() {
       // Load an external image via URL
+	   String workingDir = System.getProperty("user.dir");
+	    System.out.println("Current working directory : " + workingDir);
       URL imgUrl = getClass().getClassLoader().getResource(imgFileName);
       if (imgUrl == null) {
          System.err.println("Couldn't find file: " + imgFileName);
