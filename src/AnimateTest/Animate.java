@@ -1,6 +1,7 @@
 package AnimateTest;
 
 import java.applet.Applet;
+import java.util.concurrent.ThreadLocalRandom;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -13,7 +14,7 @@ public class Animate extends Applet implements Runnable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	int x,y,num,width=100,height=100, appletHeight, appletWidth, incX=1, incY=1;
+	int x,y,num,width=50,height=50, appletHeight, appletWidth, incX=1, incY=1;
 	
 	int delay = 100;
 	
@@ -77,10 +78,31 @@ public class Animate extends Applet implements Runnable {
 	
 	public void calculateLocation() {
 		
-		if ((x + width + 2) > appletWidth) right = false;
-		if ((y + height + 2) > appletHeight) down = false;
-    	if (x == 0) right = true; 
-    	if (y == 0) down = true; 
+		int min = 1;
+    	int max = 3;
+    	
+		
+		if ((x + width + 2) > appletWidth) {
+			incX = ThreadLocalRandom.current().nextInt(min, max + 1);
+			
+			right = false;
+		}
+		if ((y + height + 2) > appletHeight) {
+			incY = ThreadLocalRandom.current().nextInt(min, max + 1);
+			
+			down = false;
+		}
+    	if (x <= 0) {
+    		incX = ThreadLocalRandom.current().nextInt(min, max + 1);
+    		
+    		right = true; 
+    	}
+    	if (y <= 0) {
+    		incY = ThreadLocalRandom.current().nextInt(min, max + 1);
+    		
+    		down = true; 
+    	}
+    	
     	
     	
     	
