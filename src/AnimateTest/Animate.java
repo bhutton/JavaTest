@@ -21,7 +21,6 @@ public class Animate extends Applet implements Runnable {
 	private static final long serialVersionUID = 1L;
 
 	int x,y,num,width=50,height=50, appletHeight, appletWidth, incX=1, incY=1, delay = 100, brickHeight = 50;
-	//int[][] multi = new int[5][10];
 	
 	int[][][] takenBricks = new int[225][830][3];
 	
@@ -119,45 +118,51 @@ public class Animate extends Applet implements Runnable {
 		
 		// Ball hits right side of screen
 		if ((x + width + 2) > appletWidth) {
-			incX = ThreadLocalRandom.current().nextInt(min, max + 1);
+			incX = ThreadLocalRandom.current().nextInt(min, max);
 			
 			right = false;
 		}
 		
 		// Ball hits bottom of screen
 		if ((y + height + 2) > appletHeight) {
-			incY = ThreadLocalRandom.current().nextInt(min, max + 1);
+			incY = ThreadLocalRandom.current().nextInt(min, max);
 			
 			down = false;
 		}
 		
 		// Ball hits left side of screen
     	if (x <= 0) {
-    		incX = ThreadLocalRandom.current().nextInt(min, max + 1);
+    		incX = ThreadLocalRandom.current().nextInt(min, max);
     		
     		right = true; 
     	}
     	
     	// Ball hits top of screen or bricks
     	if (y <= ((brickHeight + 5) * 4)) {
-    		System.out.println(x);
+    		System.out.println("x: " + x);
     		
-    		incY = ThreadLocalRandom.current().nextInt(min, max + 1);
+    		incY = ThreadLocalRandom.current().nextInt(min, max);
+    		
+    		if (!down) {
+	    		// Initialize array and setting taken bricks to 0 indicating none
+	    		for (count = 0; count < 225; count++) {
+	    			for (counter = 0; counter < 830; counter++) {
+	    				System.out.println("Entered for");
+	    				//System.out.println("xbrick = " + takenBricks[count][counter][0]);
+	    				//System.out.println("ybrick = " + takenBricks[count][counter][1]);
+	    				
+	    				if ( (takenBricks[count][counter][0] >= x) &&
+	    					 (takenBricks[count][counter][0] <= x ) ) {
+	    					takenBricks[count][counter][2] = 1;
+	    					
+	    					//System.out.println("takebrick" + takenBricks[count][counter][2]);
+	    				}
+	    				//takenBricks[count][counter][2] = 1;
+	    			}
+	    		}
+    		}
     		
     		down = true; 
-    		
-    		// Initialize array and setting taken bricks to 0 indicating none
-    		for (count = 0; count < 225; count++) {
-    			for (counter = 0; counter < 830; counter++) {
-    				if ( (takenBricks[count][counter][1] >= y-160) &&
-    					 (takenBricks[count][counter][1] <= y+160) ) {
-    					takenBricks[count][counter][2] = 1;
-    					
-    					System.out.println(takenBricks[count][counter][1]);
-    				}
-    				//takenBricks[count][counter][2] = 1;
-    			}
-    		}
     	}
     	
     	if (right) x += incX; 
@@ -183,7 +188,6 @@ public class Animate extends Applet implements Runnable {
 	    // Draw ball
 	    g.drawImage(imgBall, x, y, null);
 	    
-	    
 	    //System.out.println(x + ", " + y); 
 	    
 	    // Draw bricks at top of screen
@@ -193,12 +197,11 @@ public class Animate extends Applet implements Runnable {
 	    	
 		    for (counter = 5; counter < 800; counter += 55) {
 		    	
+		    	takenBricks[brickX][brickY][1] = counter;
 		    	
-		    	if (takenBricks[count][counter][2] == 0)
+		    	if (takenBricks[brickX][brickY][2] == 0)
 		    		g.drawImage(imgBrick, counter, count, null);
 		    	
-		    	
-		    	takenBricks[brickX][brickY][1] = counter;
 		    	
 		    	brickY++;
 		    }
