@@ -21,6 +21,11 @@ public class Animate extends Applet implements Runnable {
 	private static final long serialVersionUID = 1L;
 
 	int x,y,num,width=50,height=50, appletHeight, appletWidth, incX=1, incY=1, delay = 100, brickHeight = 50;
+	//int[][] multi = new int[5][10];
+	
+	int[][][] takenBricks = new int[225][830][1];
+	
+	int count = 0, counter = 0;
 	
 	Thread animatorThread;
 	
@@ -43,6 +48,13 @@ public class Animate extends Applet implements Runnable {
 		// Load Brick Image
 		try { imgBrick = ImageIO.read(new File(brick)); } 
 		catch (IOException e) { e.printStackTrace(); }
+		
+		// Initialize array and setting taken bricks to 0 indicating none
+		for (count = 0; count < 225; count++) {
+			for (counter = 0; counter < 830; counter++) {
+				takenBricks[count][counter][0] = 0;
+			}
+		}
 		
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
@@ -99,6 +111,8 @@ public class Animate extends Applet implements Runnable {
 	
 	public void calculateLocation() {
 		
+		if (y == 0) y = ((brickHeight + 5) * 4);
+		
 		int min = 1;
     	int max = 3;
     	
@@ -136,15 +150,17 @@ public class Animate extends Applet implements Runnable {
 		Dimension appletSize = this.getSize();
 	    appletHeight = appletSize.height;
 	    appletWidth = appletSize.width;
-	    
+	   
 	    g.drawImage(imgBall, x, y, null);
 	    
-	    for (int count = 5; count < 200; count += 55) {	
-		    for (int counter = 5; counter < appletWidth; counter += 55) {
-		    	g.drawImage(imgBrick, counter, count, null);
+	    System.out.println(x + ", " + y); 
+	    
+	    for (count = 5; count < 200; count += 55) {	
+		    for (counter = 5; counter < 800; counter += 55) {
+		    	if (takenBricks[count][counter][0] == 0)
+		    		g.drawImage(imgBrick, counter, count, null);
 		    }
 	    }
-	    
 	}
 
 }
