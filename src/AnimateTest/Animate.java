@@ -28,6 +28,7 @@ public class Animate extends Applet implements Runnable {
 	Thread animatorThread;
 	
 	boolean frozen = false, forward = true, right = true, down = true;
+	static int xCoord = 0, yCoord = 1, brickActive = 2;
 	
 	BufferedImage imgBall = null, imgBrick = null;
 	
@@ -109,6 +110,8 @@ public class Animate extends Applet implements Runnable {
 	
 	public void calculateLocation() {
 		
+		incY = 3;
+		
 		// Start ball below bricks
 		if (y == 0) y = ((brickHeight + 5) * 4);
 		
@@ -124,7 +127,8 @@ public class Animate extends Applet implements Runnable {
 		
 		// Ball hits bottom of screen
 		if ((y + height + 2) > appletHeight) {
-			incY = ThreadLocalRandom.current().nextInt(min, max);
+			//incY = ThreadLocalRandom.current().nextInt(min, max);
+			incX = ThreadLocalRandom.current().nextInt(min, max);
 			
 			down = false;
 		}
@@ -137,8 +141,9 @@ public class Animate extends Applet implements Runnable {
     	}
     	
     	// Ball hits top of screen or bricks
-    	if (y <= ((brickHeight + 5) * 4)) {
-    		incY = ThreadLocalRandom.current().nextInt(min, max);
+    	if (y < ((brickHeight + 5) * (numRows - 1))) {
+    		//incY = ThreadLocalRandom.current().nextInt(min, max);
+    		incX = ThreadLocalRandom.current().nextInt(min, max);
     		this.checkBricks();
     	}
     	
@@ -152,13 +157,23 @@ public class Animate extends Applet implements Runnable {
 	private void checkBricks() {
 				
 		if (down == false) {
+			
+			System.out.println("------------------");
 		    
-			// Initialize array and setting taken bricks to 0 indicating none
     		for (int count = 0; count < numCols; count++) {
     			for (int counter = 0; counter < numRows; counter++) {
     				
     				if (takenBricks[count][counter][0] >= x-60 &&
     					takenBricks[count][counter][0] <= x+120) {
+    					
+    					//if (takenBricks[count][counter][1] >= y-160 &&
+    					//	takenBricks[count][counter][1] <= y+160)
+    					//	takenBricks[count][counter][2] = 1;
+    					
+    					/*System.out.println("brick x = " + takenBricks[count][counter][0]);
+    					System.out.println("brick y = " + takenBricks[count][counter][1]);
+    					System.out.println("ball x = " + x);
+    					System.out.println("ball y = " + y);*/
     					
     					takenBricks[count][counter][2] = 1;
     					
@@ -185,24 +200,25 @@ public class Animate extends Applet implements Runnable {
 	    // Draw bricks at top of screen
 	    for (int count = 5; count < 800; count += 55) {
 	    	
-	    	takenBricks[brickX][brickY][0] = count;
+	    	takenBricks[brickX][brickY][xCoord] = count;
 	    	
-		    for (int counter = 5; counter < 200; counter += 55) {
+	    	brickY = 0;
+	    	
+		    for (int counter = 5; counter <= (numRows * 5); counter += 55) {
 		    	
-		    	takenBricks[brickX][brickY][1] = counter;
+		    	takenBricks[brickX][brickY][yCoord] = counter;
 		    	
-		    	if (takenBricks[brickX][brickY][2] == 0)
+		    	if (takenBricks[brickX][brickY][brickActive] == 0)
 		    		g.drawImage(imgBrick, count, counter, null);
-		    	
-		    	
+		    			    	
 		    	brickY++;
 		    }
 		    
 		    brickX++;
 	    }
 	    
-	    numRows = brickY;
-	    numCols = brickX;
+	    numRows = brickY+1;
+	    numCols = brickX+1;
 	}
 
 }
