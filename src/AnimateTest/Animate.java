@@ -23,8 +23,7 @@ public class Animate extends Applet implements Runnable {
 	int x,y,num,width=50,height=50, appletHeight, appletWidth, incX=1, incY=1, delay = 100, brickHeight = 50;
 	
 	int[][][] takenBricks = new int[225][830][3];
-	
-	int count = 0, counter = 0;
+	int numRows = 0, numCols = 0;
 	
 	Thread animatorThread;
 	
@@ -49,8 +48,8 @@ public class Animate extends Applet implements Runnable {
 		catch (IOException e) { e.printStackTrace(); }
 		
 		// Initialize array and setting taken bricks to 0 indicating none
-		for (count = 0; count < 225; count++) {
-			for (counter = 0; counter < 830; counter++) {
+		for (int count = 0; count < 225; count++) {
+			for (int counter = 0; counter < 830; counter++) {
 				takenBricks[count][counter][2] = 0;
 			}
 		}
@@ -88,7 +87,7 @@ public class Animate extends Applet implements Runnable {
 		
 		Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 		
-		long startTime = System.currentTimeMillis();
+		//long startTime = System.currentTimeMillis();
 		
 		Thread currentThread = Thread.currentThread();
 
@@ -99,7 +98,7 @@ public class Animate extends Applet implements Runnable {
 	    	repaint();
 	    	
 	    	try {
-	    		startTime += delay;
+	    		//startTime += delay;
 	    		Thread.sleep(10);
 	    	} 
 	    	catch (InterruptedException e) {
@@ -139,30 +138,8 @@ public class Animate extends Applet implements Runnable {
     	
     	// Ball hits top of screen or bricks
     	if (y <= ((brickHeight + 5) * 4)) {
-    		System.out.println("x: " + x);
-    		
     		incY = ThreadLocalRandom.current().nextInt(min, max);
-    		
-    		if (!down) {
-	    		// Initialize array and setting taken bricks to 0 indicating none
-	    		for (count = 0; count < 225; count++) {
-	    			for (counter = 0; counter < 830; counter++) {
-	    				System.out.println("Entered for");
-	    				//System.out.println("xbrick = " + takenBricks[count][counter][0]);
-	    				//System.out.println("ybrick = " + takenBricks[count][counter][1]);
-	    				
-	    				if ( (takenBricks[count][counter][0] >= x) &&
-	    					 (takenBricks[count][counter][0] <= x ) ) {
-	    					takenBricks[count][counter][2] = 1;
-	    					
-	    					//System.out.println("takebrick" + takenBricks[count][counter][2]);
-	    				}
-	    				//takenBricks[count][counter][2] = 1;
-	    			}
-	    		}
-    		}
-    		
-    		down = true; 
+    		this.checkBricks();
     	}
     	
     	if (right) x += incX; 
@@ -172,10 +149,27 @@ public class Animate extends Applet implements Runnable {
     	
 	}
 	
-	private void checkBrick() {
+	private void checkBricks() {
+				
+		if (down == false) {
+		    
+			// Initialize array and setting taken bricks to 0 indicating none
+    		for (int count = 0; count < numCols; count++) {
+    			for (int counter = 0; counter < numRows; counter++) {
+    				
+    				if (takenBricks[count][counter][0] >= x-60 &&
+    					takenBricks[count][counter][0] <= x+120) {
+    					
+    					takenBricks[count][counter][2] = 1;
+    					
+    				}
+    			}
+    		}
+		}
 		
+		down = true; 
 	}
-
+	
 	public void paint(Graphics g) {
 		
 		int brickX = 0, brickY = 0;
@@ -188,19 +182,17 @@ public class Animate extends Applet implements Runnable {
 	    // Draw ball
 	    g.drawImage(imgBall, x, y, null);
 	    
-	    //System.out.println(x + ", " + y); 
-	    
 	    // Draw bricks at top of screen
-	    for (count = 5; count < 200; count += 55) {
+	    for (int count = 5; count < 800; count += 55) {
 	    	
 	    	takenBricks[brickX][brickY][0] = count;
 	    	
-		    for (counter = 5; counter < 800; counter += 55) {
+		    for (int counter = 5; counter < 200; counter += 55) {
 		    	
 		    	takenBricks[brickX][brickY][1] = counter;
 		    	
 		    	if (takenBricks[brickX][brickY][2] == 0)
-		    		g.drawImage(imgBrick, counter, count, null);
+		    		g.drawImage(imgBrick, count, counter, null);
 		    	
 		    	
 		    	brickY++;
@@ -208,6 +200,9 @@ public class Animate extends Applet implements Runnable {
 		    
 		    brickX++;
 	    }
+	    
+	    numRows = brickY;
+	    numCols = brickX;
 	}
 
 }
